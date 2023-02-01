@@ -12,6 +12,8 @@ class chirp extends Model
     
     protected $fillable = [
         'message',
+        'path',
+        'user_id'
     ];
 
     protected $dispatchesEvents = [
@@ -21,5 +23,9 @@ class chirp extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function attachments(){
+        return $this->morphOne(Attachment::class, 'attachmentable');
     }
 }

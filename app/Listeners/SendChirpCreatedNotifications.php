@@ -28,8 +28,8 @@ class SendChirpCreatedNotifications implements ShouldQueue
      */
     public function handle(ChirpCreated $event)
     {
-        foreach (User::whereNot("id", $event->chirp->user_id)->cursor() as $user){
-            $user->notify(NewChirp($event->chirp));
-        }
+        // foreach (User::whereNot("id", $event->chirp->user_id)->cursor() as $user){
+        //     $user->notify(new NewChirp($event->chirp));
+        // }
     }
 }

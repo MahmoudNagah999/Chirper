@@ -1,10 +1,18 @@
 <x-app-layout>
     <div class="max-w-2xl mx-auto p-4 sm:p-6 lg:p-8">
-        <form action="{{ route('chirps.store')}}" method="post">
+        <div class="text-center" style="font-size: 60px; color:darkslategrey">
+            <h1><b><i> Chirp App </i></b></h1>
+        </div>
+        <form action="{{ route('chirps.store')}}" method="post" enctype="multipart/form-data">
             @csrf
             <textarea name="message" placeholder="{{__('what\'s on your mind ?')}}" 
             class="block w-full border-gray-300 focus:borderindigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 rounded-md shadow-sm" 
             >{{ old('message')}}</textarea>
+            <br>
+            <div class="mb-3">
+                <input type="file" name="photo" class="form-control">
+            </div>
+
             <x-input-error :messages="$errors->get('message')" class="mt-2" />
             <x-primary-button class="mt-4">{{__('chirp')}}</x-primary-button>
         </form>
@@ -42,18 +50,30 @@
                                             @csrf
                                             @method('delete')
                                             <x-dropdown-link :href="route('chirps.destroy', $chirp)" onclick="event.preventDefault(); this.closest('form').submit();">
-                                                {{ __('Delet') }}
+                                                {{ __('Delete') }}
                                             </x-dropdown-link>
                                         </form>
+                                        
+                                        @if ($chirp->attachments()->first() != Null)
+                                            <form action="{{ route('photo.delete',$chirp->attachments()->first()?->id)}}" method="post">
+                                                @csrf
+                                                @method('delete')
+                                                <x-dropdown-link :href="route('photo.delete',$chirp->attachments()->first()?->id)" onclick="event.preventDefault(); this.closest('form').submit();">
+                                                    {{ __('Delete Photo') }}
+                                                </x-dropdown-link>
+                                            </form>   
+                                        @endif
+
                                     </x-slot>
                                 </x-dropdown>
                             @endif
                         </div>
                         <p class="mt-4 text-lg text-gray-900">{{ $chirp->message }}</p>
+                        <img src="{{config('filesystems.disks.chirper.url')}}/{{$chirp->user->name}}/{{$chirp->attachments()->first()?->server_name}}" alt="img">
                     </div>
                 </div>
             @endforeach
         </div>
-
+        {{ $chirps->links() }}
     </div>
 </x-app-layout>
